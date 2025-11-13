@@ -97,7 +97,7 @@ function fvLumpSum(P: number, annualPct: number, years: number) {
 }
 
 export default function MortgageLoanCalculatorSK() {
-  const [tab, setTab] = useState<"hypo" | "nehypo">("hypo");
+  const [tab, setTab] = useState("hypo");
   const [banks, setBanks] = useState(DEMO_BANKS);
 
   const [amount, setAmount] = useState(180000);
@@ -177,7 +177,7 @@ export default function MortgageLoanCalculatorSK() {
       </div>
       </div>
 
-      <Tabs value={tab} onValueChange={(v) => setTab(v as any)} className="w-full">
+      <Tabs value={tab} onValueChange={setTab} className="w-full">
         <TabsList className="grid grid-cols-2 w-full text-xs sm:text-sm">
           <TabsTrigger value="hypo">Hypotekárny úver</TabsTrigger>
           <TabsTrigger value="nehypo">Nehypotekárny (spotrebný) úver</TabsTrigger>
