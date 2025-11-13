@@ -167,17 +167,18 @@ export default function MortgageLoanCalculatorSK() {
   }, [validatedAmount, validatedYears, totalPaid]);
 
   return (
-    <div className="mx-auto max-w-5xl p-4 md:p-8 space-y-6">
-      <div className="flex items-center gap-3">
-        <h1 className="text-3xl font-bold">Kalkulátor hypotéky & úveru (SK)</h1>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Info className="h-4 w-4" />
+    <div className="mx-auto max-w-5xl p-3 sm:p-4 md:p-8 space-y-4 sm:space-y-6">
+      <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+        <h1 className="text-2xl sm:text-3xl font-bold leading-tight">Kalkulátor hypotéky & úveru (SK)</h1>
+        <div className="flex items-start gap-2 text-xs sm:text-sm text-muted-foreground max-w-xs sm:max-w-md">
+          <Info className="h-4 w-4 mt-1 hidden sm:block" />
           <span>Vyber banku alebo používaj vlastnú sadzbu. Posuvníky sú rýchlejšie, polia sa pri kliku vyprázdnia.</span>
         </div>
       </div>
+      </div>
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as any)} className="w-full">
-        <TabsList className="grid grid-cols-2 w-full">
+        <TabsList className="grid grid-cols-2 w-full text-xs sm:text-sm">
           <TabsTrigger value="hypo">Hypotekárny úver</TabsTrigger>
           <TabsTrigger value="nehypo">Nehypotekárny (spotrebný) úver</TabsTrigger>
         </TabsList>
@@ -354,13 +355,14 @@ function CalculatorCard({
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
-      <CardContent className="grid md:grid-cols-2 gap-6">
-        <div className="space-y-6">
+      <CardContent className="grid md:grid-cols-2 gap-4 sm:gap-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Výška úveru – slider + input */}
           <div className="grid gap-2">
             <Label>Výška úveru</Label>
             <input
               type="range"
+              className="w-full h-8 touch-none"
               min={amountLimit.min}
               max={amountLimit.max}
               step={amountLimit.step}
@@ -369,6 +371,8 @@ function CalculatorCard({
             />
             <EditableNumber
               value={amount}
+              inputClassName="h-11 text-base"
+              
               onChangeNumber={(v) => setAmount(Math.min(Math.max(v, amountLimit.min), amountLimit.max))}
               suffix=" €"
               clearOnFocus
@@ -380,6 +384,7 @@ function CalculatorCard({
             <Label>Splatnosť v rokoch</Label>
             <input
               type="range"
+              className="w-full h-8 touch-none"
               min={yearsLimit.min}
               max={yearsLimit.max}
               step={yearsLimit.step}
@@ -388,6 +393,8 @@ function CalculatorCard({
             />
             <EditableNumber
               value={years}
+              inputClassName="h-11 text-base"
+              
               onChangeNumber={(v) => setYears(Math.min(Math.max(v, yearsLimit.min), yearsLimit.max))}
               clearOnFocus
             />
@@ -395,7 +402,7 @@ function CalculatorCard({
 
           <div className="grid gap-2">
             <Label>Inflácia p.a. (%)</Label>
-            <EditableNumber value={inflationPct} onChangeNumber={setInflationPct} clearOnFocus />
+            <EditableNumber value={inflationPct} onChangeNumber={setInflationPct} clearOnFocus inputClassName="h-11 text-base" />
           </div>
 
           <div className="grid gap-2">
@@ -419,6 +426,7 @@ function CalculatorCard({
                 value={bankList.find((b) => b.id === selectedBank)?.rate ?? 0}
                 onChangeNumber={(v) => onBankRateChange(selectedBank, String(v))}
                 clearOnFocus
+                inputClassName="h-11 text-base"
               />
             </div>
           )}
@@ -426,7 +434,7 @@ function CalculatorCard({
           <div className="flex items-center justify-between rounded-2xl border p-3">
             <div className="space-y-1">
               <Label>Vlastná sadzba p.a. (%)</Label>
-              <EditableNumber value={customRate} onChangeNumber={setCustomRate} clearOnFocus />
+              <EditableNumber value={customRate} onChangeNumber={setCustomRate} clearOnFocus inputClassName="h-11 text-base" />
             </div>
             <div className="flex items-center gap-2">
               <Switch checked={useCustomRate} onCheckedChange={setUseCustomRate} id="customRateSwitch" />
@@ -440,7 +448,7 @@ function CalculatorCard({
             <CardHeader>
               <CardTitle className="text-lg">Výsledky (nominálne)</CardTitle>
             </CardHeader>
-            <CardContent className="grid grid-cols-2 gap-4">
+            <CardContent className="grid grid-cols-2 gap-3 sm:gap-4">
               <Stat label="Mesačná splátka" value={fmtMoney(monthly)} />
               <Stat label="Nominálna sadzba" value={fmtPct(useCustomRate ? customRate : bankList.find(b=>b.id===selectedBank)?.rate || 0)} />
               <Stat label="Zaplatené spolu" value={fmtMoney(totalPaid)} />
@@ -452,7 +460,7 @@ function CalculatorCard({
             <CardHeader>
               <CardTitle className="text-lg">Reálne (po započítaní inflácie)</CardTitle>
             </CardHeader>
-            <CardContent className="grid grid-cols-2 gap-4">
+            <CardContent className="grid grid-cols-2 gap-3 sm:gap-4">
               <Stat label="Reálna mesačná miera" value={`${(rRealMonthly * 100).toFixed(3)}%/mes.`} />
               <Stat label="PV splátok (dnešné €)" value={fmtMoney(pvOfPayments)} />
               <Stat label="Reálny preplatok" value={fmtMoney(realOverpayment)} />
@@ -468,7 +476,7 @@ function CalculatorCard({
 }
 
 // Pomocný komponent na "user-friendly" čísla: vyprázdni pole pri focus, parsuje číslo pri zmene
-function EditableNumber({ value, onChangeNumber, suffix, clearOnFocus = false }: { value: number; onChangeNumber: (v: number) => void; suffix?: string; clearOnFocus?: boolean; }) {
+function EditableNumber({ value, onChangeNumber, suffix, clearOnFocus = false, inputClassName = "" }: { value: number; onChangeNumber: (v: number) => void; suffix?: string; clearOnFocus?: boolean; inputClassName?: string; })) {
   const [txt, setTxt] = React.useState<string>(String(value));
   React.useEffect(() => {
     setTxt(String(value));
@@ -477,6 +485,7 @@ function EditableNumber({ value, onChangeNumber, suffix, clearOnFocus = false }:
   return (
     <div className="flex items-center gap-2">
       <Input
+        className={`${inputClassName} text-base sm:text-lg`}
         value={txt}
         onFocus={(e) => {
           if (clearOnFocus) {
@@ -501,11 +510,11 @@ function EditableNumber({ value, onChangeNumber, suffix, clearOnFocus = false }:
   );
 }
 
-function Stat({ label, value }: { label: string; value: string; }) {
+function Stat({ label, value }: { label: string; value: string; })) {
   return (
     <div className="rounded-2xl bg-muted/30 p-3">
       <div className="text-xs text-muted-foreground">{label}</div>
-      <div className="text-lg font-semibold">{value}</div>
+      <div className="text-base sm:text-lg font-semibold">{value}</div>
     </div>
   );
 }
